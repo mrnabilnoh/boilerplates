@@ -17,12 +17,6 @@
 # kubectl apply -f https://openebs.github.io/charts/jiva-operator.yaml
 #
 
-# Create the OpenEBS namespace
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: openebs
----
 # Create Maya Service Account
 apiVersion: v1
 kind: ServiceAccount
