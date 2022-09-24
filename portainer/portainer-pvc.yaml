@@ -1,0 +1,18 @@
+# Source: portainer/templates/pvc.yaml
+apiVersion: "v1"
+kind: "PersistentVolumeClaim"
+metadata:
+  name: portainer
+  namespace: portainer
+  labels:
+    io.portainer.kubernetes.application.stack: portainer
+    app.kubernetes.io/name: portainer
+    app.kubernetes.io/instance: portainer
+    app.kubernetes.io/version: "ce-latest-ee-2.15.1"
+spec:
+  storageClassName: "cstor-csi-disk"
+  accessModes:
+    - "ReadWriteOnce"
+  resources:
+    requests:
+      storage: "10Gi"
