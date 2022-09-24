@@ -1,13 +1,11 @@
 ## Requirement
 
 ```
-sudo apt install open-iscsi -y
-sudo systemctl enable --now iscsid
+apt install open-iscsi -y
+systemctl enable --now iscsid
+modprobe iscsi_tcp
+echo iscsi_tcp >/etc/modules-load.d/iscsi-tcp.conf
+kubectl apply -f https://openebs.github.io/charts/openebs-operator.yaml
+kubectl apply -f https://openebs.github.io/charts/openebs-operator.yaml
 ```
 
-## Require Label on Node that hold your storage
-### Temporary Disable
-
-```
-kubectl label node <node name> "openebs.io/nodegroup"="storage-node"
-```
