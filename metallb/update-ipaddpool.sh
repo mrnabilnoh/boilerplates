@@ -4,4 +4,4 @@
 export $(grep -v '^#' .env | xargs)
 
 
-envsubst < ipaddpool.yml | kubectl apply -f -
+envsubst < ipaddpool.yaml | kubectl apply -f -
