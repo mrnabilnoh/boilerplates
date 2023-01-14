@@ -5,11 +5,11 @@ helm repo update
 ```
 ## Export Traefik from Helm
 ```
-helm show values traefik/traefik > traefik.yaml
+helm show values traefik/traefik > values.yaml
 ```
 ## Install Traefik
 ```
-helm install traefik traefik/traefik --values traefik.yaml -n traefik 
+helm install traefik traefik/traefik --values values.yaml -n traefik --create-namespace 
 ```
 ## Update/Upgrade Traefik
 ```
