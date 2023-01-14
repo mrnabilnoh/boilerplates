@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ${K3S_TRAEFIK_CERTIFICATE_NAME}
+  namespace: traefik
+spec:
+  secretName: ${K3S_TRAEFIK_CERTIFICATE_NAME_SECRET}
+  dnsNames:
+    - '${K3S_TRAEFIK_CLOUDFLARE_DNS1}'
+    - '${K3S_TRAEFIK_CLOUDFLARE_DNS2}'
+  issuerRef:
+    name: cloudflare
+    kind: Issuer

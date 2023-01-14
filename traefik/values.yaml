@@ -129,19 +129,20 @@ experimental:
 # Create an IngressRoute for the dashboard
 ingressRoute:
   dashboard:
-    enabled: false
+    enabled: true
     # Additional ingressRoute annotations (e.g. for kubernetes.io/ingress.class)
     annotations: {}
     # Additional ingressRoute labels (e.g. for filtering IngressRoute by custom labels)
     labels: {}
     # The router match rule used for the dashboard ingressRoute
-    matchRule: PathPrefix(`/dashboard`) || PathPrefix(`/api`)
+    matchRule: Host(`${K3S_TRAEFIK_DASHBOARD_HOSTNAME}`)
     # Specify the allowed entrypoints to use for the dashboard ingress route, (e.g. traefik, web, websecure).
     # By default, it's using traefik entrypoint, which is not exposed.
     # /!\ Do not expose your dashboard without any protection over the internet /!\
-    entryPoints: ["traefik"]
+    entryPoints: ["websecure"]
     # Additional ingressRoute middlewares (e.g. for authentication)
-    middlewares: []
+    middlewares:
+      - name: traefik-dashboard-auth
 
 # Customize updateStrategy of traefik pods
 updateStrategy:
@@ -479,8 +480,8 @@ tracing: {}
   #   serviceEnvironment: ""
 
 globalArguments:
-  - "--global.checknewversion"
-  - "--global.sendanonymoususage"
+  - "--global.checknewversion=false"
+  - "--global.sendanonymoususage=false"
 
 #
 # Configure Traefik static configuration
@@ -625,7 +626,8 @@ ports:
     # middlewares:
     #   - namespace-name1@kubernetescrd
     #   - namespace-name2@kubernetescrd
-    middlewares: []
+    middlewares:
+      - traefik-traefik-default-headers@kubernetescrd
   metrics:
     # When using hostNetwork, use another port to avoid conflict with node exporter:
     # https://github.com/prometheus/prometheus/wiki/Default-port-allocations
@@ -663,7 +665,11 @@ tlsOptions: {}
 #   default:
 #     defaultCertificate:
 #       secretName: tls-cert
-tlsStore: {}
+tlsStore:
+  default:
+    defaultCertificate:
+      secretName: ${K3S_TRAEFIK_CERTIFICATE_NAME_SECRET}
+
 
 # Options for the main traefik service, where the entrypoints traffic comes
 # from.
@@ -856,7 +862,40 @@ podSecurityContext:
 #
 # In some cases, it can avoid the need for additional, extended or adhoc deployments.
 # See #595 for more details and traefik/tests/values/extra.yaml for example.
-extraObjects: []
+extraObjects:
+  - apiVersion: v1
+    kind: Secret
+    metadata:
+      name: traefik-dashboard-auth-secret
+    type: kubernetes.io/basic-auth
+    stringData:
+      username: ${K3S_TRAEFIK_DASHBOARD_USERNAME}
+      password: ${K3S_TRAEFIK_DASHBOARD_PASSWORD}
+
+  - apiVersion: traefik.containo.us/v1alpha1
+    kind: Middleware
+    metadata:
+      name: traefik-dashboard-auth
+    spec:
+      basicAuth:
+        secret: traefik-dashboard-auth-secret
+  
+  - apiVersion: traefik.containo.us/v1alpha1
+    kind: Middleware
+    metadata:
+      name: traefik-default-headers
+    spec:
+      headers:
+        frameDeny: true
+        browserXssFilter: true
+        contentTypeNosniff: true
+        forceSTSHeader: true
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 15552000
+        customFrameOptionsValue: SAMEORIGIN
+        customRequestHeaders:
+          X-Forwarded-Proto: https
 
 # This will override the default Release Namespace for Helm.
 # It will not affect optional CRDs such as `ServiceMonitor` and `PrometheusRules`
