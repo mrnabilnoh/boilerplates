@@ -1,1 +1,1 @@
-## k3s kubernetes config for my homelab experiment
+# personal template for home lab experiment.
