@@ -1,27 +1,48 @@
-## Requirement
+## Requirement For cstor
 
-```
+```bash
 apt install open-iscsi -y
 systemctl enable --now iscsid
 modprobe iscsi_tcp
 echo iscsi_tcp >/etc/modules-load.d/iscsi-tcp.conf
 ```
-## Install OpenEBS (with cstor) from source 
+# Deploy Portainer using Helm Chart
+
+Before proceeding, ensure to create a namespace in advance.
+For instance:
+```bash
+kubectl create namespace openebs
 ```
-kubectl apply -f https://openebs.github.io/charts/openebs-operator.yaml
-kubectl apply -f https://openebs.github.io/charts/cstor-operator.yaml
+
+# Install the chart repository
 ```
-## Install OpenEBS (with cstor) from file
+helm repo add openebs https://openebs.github.io/charts
+helm repo update
 ```
-kubectl apply -f openebs-operator.yaml
-kubectl apply -f cstor-operator.yaml
+# Testing the Chart
+
+Execute the following for testing the chart:
+```bash
+helm install --dry-run --debug openebs -n openebs deploy/helm/openebs
 ```
-## Setup .env config 
+
+# Exporting Chart into values.yaml 
+```bash
+helm show values openebs/openebs > values.yaml
+```
+
+# Install OpenEBS 
+```bash
+helm install openebs openebs/openebs -n openebs --create-namespace -f values.yaml
+```
+
+# Setup .env config 
 ```
 cp .env.sample .env
 ```
-## Apply CStorPoolCluster 
-#### Make sure you already setup .env file.
+# Apply CStorPoolCluster 
+
+Make sure you already setup .env file.
 ```
-bash update-cspc.sh
+bash cspc.sh
 ```
