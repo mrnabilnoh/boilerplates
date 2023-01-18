@@ -1,4 +1,4 @@
-# Deploy Portainer using Helm Chart
+# Deploy OpenEBS using Helm Chart
 
 Before proceeding, ensure to create a namespace in advance.
 For instance:
