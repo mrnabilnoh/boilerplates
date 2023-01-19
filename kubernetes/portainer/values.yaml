@@ -54,6 +54,8 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # Only use below if tls.force=true
     # nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    
   # Note: Hosts and paths are of type array
   hosts:
     - host: "${K3S_PORTAINER_INGRESS_HOSTNAME}"
