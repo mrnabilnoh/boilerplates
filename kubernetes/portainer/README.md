@@ -42,6 +42,14 @@ Make sure already setup env file before executing this.
 bash install.sh
 ```
 
+## Update/Upgrade Portainer
+
+Make sure already setup env file before executing this.
+
+```bash
+bash upgrade.sh
+```
+
 ## Uninstall Portainer
 
 ```bash
