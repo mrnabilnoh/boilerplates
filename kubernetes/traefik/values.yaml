@@ -659,7 +659,7 @@ ports:
 tlsOptions:
   default:
     minVersion: VersionTLS13
-    sniStrict: true
+#     sniStrict: true
 
 # TLS Store are created as TLSStore CRDs. This is useful if you want to set a default certificate
 # https://doc.traefik.io/traefik/https/tls/#default-certificate
