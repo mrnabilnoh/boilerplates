@@ -34,6 +34,13 @@ Make sure already setup env file before executing this.
 bash install.sh
 ```
 
+## Get Initial login password
+
+```bash
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+
+```
+
 ## Update/Upgrade ArgoCD
 
 Make sure already setup env file before executing this.
